@@ -1,21 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { Trophy, Calendar, Users, LogIn, CheckCircle, AlertCircle, Euro, ChevronRight, BarChart2, ShieldAlert, Loader2 } from 'lucide-react';
-import { supabase } from './supabaseClient';
 
 // ============================================================================
-// ⚠️ CONFIGURACIÓN DE BASE DE DATOS
+// ⚠️ CONFIGURACIÓN DE BASE DE DATOS (LISTO PARA PRODUCCIÓN)
 // ============================================================================
-// Para el entorno de vista previa, usamos un Mock (Simulador).
-// CUANDO COPIES ESTO A TU ORDENADOR (Vercel), cambia 'isMock' a false y descomenta las importaciones.
+// ¡ATENCIÓN! Cuando copies este código a tu VS Code:
+// 1. Quita las barras "//" de las 3 líneas de importación de Supabase.
+// 2. Quita las barras "//" de la última línea de este bloque (el export final).
+// 3. Cambia isMock a FALSE.
 
-const isMock = false; // <-- CAMBIA A FALSE EN TU ORDENADOR
+// import { createClient } from '@supabase/supabase-js';
+// const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+// const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
+const isMock = true; 
 
-
-
-
-// --- MOCK FALSO (Solo funciona si isMock = true) ---
-export const supabase = isMock ? {
+// --- MOCK FALSO (Evita errores en la Vista Previa del chat) ---
+const supabaseMock = {
   auth: {
     getSession: async () => ({ data: { session: null } }),
     onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => {} } } }),
@@ -31,7 +32,10 @@ export const supabase = isMock ? {
     upsert: async () => ({ error: null }),
     insert: async () => ({ error: null })
   })
-} : null; // Si isMock es false, usará el cliente real de arriba.
+};
+
+// export const supabase = isMock ? supabaseMock : createClient(supabaseUrl, supabaseAnonKey);
+export const supabase = supabaseMock;
 // ============================================================================
 
 const TEAMS = [
@@ -351,6 +355,68 @@ export default function App() {
               Todo lo recaudado se reparte entre los 3 mejores al final del torneo. Cuantos más seamos, ¡mayor será el premio!
             </p>
           </div>
+        </div>
+
+        <div className="mt-16 grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="bg-slate-900 border-l-4 border-lime-500 p-6 rounded-r-xl">
+            <h4 className="text-white font-bold text-lg mb-4 flex items-center">
+              <Trophy className="h-5 w-5 text-lime-400 mr-2" />
+              Política de Premios
+            </h4>
+            <ul className="space-y-3 text-sm text-slate-300">
+              <li className="flex justify-between border-b border-slate-800 pb-2">
+                <span>🥇 1º Clasificado</span>
+                <span className="font-bold text-lime-400">60% del Bote</span>
+              </li>
+              <li className="flex justify-between border-b border-slate-800 pb-2">
+                <span>🥈 2º Clasificado</span>
+                <span className="font-bold text-slate-200">25% del Bote</span>
+              </li>
+              <li className="flex justify-between border-b border-slate-800 pb-2">
+                <span>🥉 3º Clasificado</span>
+                <span className="font-bold text-orange-400">15% del Bote</span>
+              </li>
+            </ul>
+            <div className="mt-4 p-3 bg-slate-950 rounded-lg border border-slate-800 text-xs text-slate-300 leading-relaxed">
+              <strong className="text-lime-400">En caso de empate:</strong> Si dos o más usuarios tienen los mismos puntos en puestos premiados, el importe de ese premio se dividirá a partes iguales entre todos los empatados.
+            </div>
+          </div>
+
+          <div className="bg-slate-900 border-l-4 border-blue-500 p-6 rounded-r-xl">
+            <h4 className="text-white font-bold text-lg mb-4 flex items-center">
+              <BarChart2 className="h-5 w-5 text-blue-400 mr-2" />
+              Sistema de Puntos
+            </h4>
+            <p className="text-xs text-slate-400 mb-3">Tus 4 equipos sumarán puntos según su progreso real en el torneo:</p>
+            <ul className="space-y-3 text-sm text-slate-300">
+              <li className="flex justify-between border-b border-slate-800 pb-2">
+                <span>Pasan a Semifinales</span>
+                <span className="font-bold text-blue-400">+5 pts</span>
+              </li>
+              <li className="flex justify-between border-b border-slate-800 pb-2">
+                <span>Llegan a la Final</span>
+                <span className="font-bold text-blue-400">+10 pts</span>
+              </li>
+              <li className="flex justify-between border-b border-slate-800 pb-2">
+                <span>Ganan el Mundial</span>
+                <span className="font-bold text-blue-400">+20 pts</span>
+              </li>
+            </ul>
+          </div>
+
+          <div className="bg-red-950/30 border-l-4 border-red-500 p-6 rounded-r-xl flex flex-col justify-center">
+            <h4 className="text-red-400 font-bold text-lg mb-2 flex items-center">
+              <ShieldAlert className="h-5 w-5 mr-2" />
+              Aviso Importante
+            </h4>
+            <p className="text-sm text-slate-300">
+              El administrador se reserva el derecho de <strong>eliminar de la plataforma y de la clasificación</strong> a cualquier usuario registrado que no haya abonado los 20€ correspondientes antes del inicio del torneo.
+            </p>
+          </div>
+        </div>
+
+        <div className="mt-12 text-center text-xs text-slate-600 border-t border-slate-800 pt-6">
+          <p>Fuente de datos: Selecciones confirmadas para la Fase Final del Mundial 2026 basadas en datos oficiales de la FIFA (Actualizado). Selecciones no clasificadas (ej. Italia) han sido excluidas.</p>
         </div>
       </div>
     </div>
