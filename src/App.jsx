@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Trophy, Calendar, Users, LogIn, CheckCircle, AlertCircle, Euro, ChevronRight, BarChart2, ShieldAlert, Loader2 } from 'lucide-react';
+import { supabase } from './supabaseClient';
 
 // ============================================================================
 // ⚠️ CONFIGURACIÓN DE BASE DE DATOS
@@ -10,11 +11,7 @@ import { Trophy, Calendar, Users, LogIn, CheckCircle, AlertCircle, Euro, Chevron
 const isMock = false; // <-- CAMBIA A FALSE EN TU ORDENADOR
 
 
-// DESCOMENTA ESTAS LÍNEAS EN TU ORDENADOR:
-import { createClient } from '@supabase/supabase-js';
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+
 
 
 // --- MOCK FALSO (Solo funciona si isMock = true) ---
