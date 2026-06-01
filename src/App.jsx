@@ -12,11 +12,9 @@ import {
   ShieldAlert, 
   Loader2,
   X,
-  Phone,
   User,
   Info
 } from 'lucide-react';
-
 
 // Listado de selecciones reales confirmadas para el Mundial 2026 (Excluida Italia)
 const TEAMS = [
@@ -38,7 +36,6 @@ const TEAMS = [
   { id: 'URU', name: 'Uruguay', flag: '🇺🇾' },
   { id: 'USA', name: 'Estados Unidos', flag: '🇺🇸' }
 ].sort((a, b) => a.name.localeCompare(b.name));
-
 
 // Función segura para obtener variables de entorno sin provocar fallos de análisis sintáctico en ES2015
 const getEnvVariable = (key) => {
@@ -91,22 +88,11 @@ const getSupabaseClient = async () => {
   }
 };
 
-
-// Sistema de base de datos local respaldada en LocalStorage para garantizar el funcionamiento sin fallos
+// Sistema de base de datos local limpia respaldada en LocalStorage (SE ELIMINARON TODOS LOS REGISTROS DE PRUEBA)
 const getLocalDb = () => {
   const defaultDb = {
-    profiles: [
-      { id: 'u1', name: 'Vecino_77', phone: '600000001', has_paid: true, points: 55 },
-      { id: 'u2', name: 'Luis_Perez', phone: '600000004', has_paid: false, points: 35 },
-      { id: 'u3', name: 'Marta_G', phone: '600000002', has_paid: true, points: 20 },
-      { id: 'u4', name: 'Carlos_Bar', phone: '600000003', has_paid: true, points: 15 },
-    ],
-    picks: [
-      { id: 'p1', user_id: 'u1', first_place: 'ESP', second_place: 'BRA', third_place: 'FRA', fourth_place: 'GER' },
-      { id: 'p2', user_id: 'u2', first_place: 'ESP', second_place: 'CRO', third_place: 'ARG', fourth_place: 'GER' },
-      { id: 'p3', user_id: 'u3', first_place: 'ARG', second_place: 'FRA', third_place: 'ENG', fourth_place: 'POR' },
-      { id: 'p4', user_id: 'u4', first_place: 'BRA', second_place: 'ARG', third_place: 'NED', fourth_place: 'URU' },
-    ],
+    profiles: [], // Totalmente vacío para empezar de cero
+    picks: [],    // Totalmente vacío para empezar de cero
     matches: [
       { id: 1, date: '11 Jun, 20:00', team1: 'México', flag1: '🇲🇽', score1: '-', team2: 'Alemania', flag2: '🇩🇪', score2: '-', status: 'Próximamente' },
       { id: 2, date: '12 Jun, 16:00', team1: 'España', flag1: '🇪🇸', score1: '-', team2: 'Marruecos', flag2: '🇲🇦', score2: '-', status: 'Próximamente' },
@@ -117,7 +103,13 @@ const getLocalDb = () => {
   const stored = localStorage.getItem('mundialbet_local_db');
   if (stored) {
     try {
-      return JSON.parse(stored);
+      const parsed = JSON.parse(stored);
+      // Forzar limpieza si el usuario pidió purgar registros simulados antiguos
+      if (parsed.profiles && parsed.profiles.length > 0 && parsed.profiles.some(p => p.id === 'u1')) {
+        localStorage.setItem('mundialbet_local_db', JSON.stringify(defaultDb));
+        return defaultDb;
+      }
+      return parsed;
     } catch (e) {
       return defaultDb;
     }
@@ -129,7 +121,6 @@ const getLocalDb = () => {
 const saveLocalDb = (db) => {
   localStorage.setItem('mundialbet_local_db', JSON.stringify(db));
 };
-
 
 // Componente para notificaciones personalizadas tipo Toast
 const ToastNotification = ({ toast, onClose }) => {
@@ -202,7 +193,6 @@ const ConfirmationModal = ({ modal, onClose, onConfirm }) => {
   );
 };
 
-
 const Navbar = ({ user, setCurrentTab, handleLogout }) => (
   <nav className="bg-slate-900 border-b border-slate-800 sticky top-0 z-50 shadow-md">
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -243,7 +233,6 @@ const Navbar = ({ user, setCurrentTab, handleLogout }) => (
     </div>
   </nav>
 );
-
 
 const LandingPage = ({ setCurrentTab }) => (
   <div className="min-h-screen bg-slate-950 text-slate-300">
@@ -364,7 +353,6 @@ const LandingPage = ({ setCurrentTab }) => (
   </div>
 );
 
-
 const LoginPage = ({ 
   email, setEmail, 
   password, setPassword, 
@@ -447,7 +435,6 @@ const LoginPage = ({
   );
 };
 
-
 const Dashboard = ({ 
   user, profile, setProfile, 
   userPicks, updatePick, isLocked, 
@@ -456,13 +443,24 @@ const Dashboard = ({
 }) => {
   const [activeView, setActiveView] = useState('picks');
 
-  const isFormValid = () => {
-    const hasName = profile.name && profile.name.trim() !== '';
-    const hasPhone = profile.phone && profile.phone.trim() !== '';
-    const picksArray = Object.values(userPicks);
-    const hasAllPicks = picksArray.length === 4 && picksArray.every(p => p !== '');
-    const uniqueTeams = new Set(picksArray.filter(p => p !== ''));
-    return hasName && hasPhone && hasAllPicks && uniqueTeams.size === 4;
+  // Comprobar individualmente las validaciones para dar un mensaje explicativo y dinámico
+  const hasNameVal = profile.name && profile.name.trim() !== '';
+  const hasPhoneVal = profile.phone && profile.phone.trim() !== '';
+  
+  const picksArray = Object.values(userPicks);
+  const hasAllPicksVal = picksArray.length === 4 && picksArray.every(p => p !== '');
+  const uniqueTeams = new Set(picksArray.filter(p => p !== ''));
+  const isUniqueVal = uniqueTeams.size === 4;
+
+  const isFormValid = hasNameVal && hasPhoneVal && hasAllPicksVal && isUniqueVal;
+
+  // Obtener mensaje dinámico de ayuda
+  const getValidationFeedback = () => {
+    if (!hasNameVal) return "⚠️ Falta introducir el Nombre o Apodo de la Tabla.";
+    if (!hasPhoneVal) return "⚠️ Falta introducir el Teléfono Móvil (Requerido para Bizum).";
+    if (!hasAllPicksVal) return "⚠️ Debes seleccionar una selección para cada uno de los 4 puestos.";
+    if (!isUniqueVal) return "⚠️ Tienes selecciones repetidas. Cada puesto debe ser un país diferente.";
+    return null;
   };
 
   return (
@@ -520,7 +518,7 @@ const Dashboard = ({
                     value={profile.name || ''} 
                     onChange={(e) => setProfile({...profile, name: e.target.value})} 
                     disabled={isLocked || submitting} 
-                    className="w-full bg-slate-950 border border-slate-850 rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:ring-2 focus:ring-lime-500 disabled:opacity-50 transition-all" 
+                    className="w-full bg-slate-950 border border-slate-850 rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:ring-2 focus:ring-lime-500 disabled:opacity-50 transition-all font-bold" 
                     placeholder="Ej: Vecino_77"
                   />
                 </div>
@@ -531,7 +529,7 @@ const Dashboard = ({
                     value={profile.phone || ''} 
                     onChange={(e) => setProfile({...profile, phone: e.target.value})} 
                     disabled={isLocked || submitting} 
-                    className="w-full bg-slate-950 border border-slate-850 rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:ring-2 focus:ring-lime-500 disabled:opacity-50 transition-all" 
+                    className="w-full bg-slate-950 border border-slate-850 rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:ring-2 focus:ring-lime-500 disabled:opacity-50 transition-all font-bold" 
                     placeholder="Ej: 600123456"
                   />
                 </div>
@@ -562,7 +560,7 @@ const Dashboard = ({
                       value={userPicks[pos.id] || ''} 
                       onChange={(e) => updatePick(pos.id, e.target.value)} 
                       disabled={isLocked || submitting} 
-                      className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:ring-2 focus:ring-lime-500 disabled:opacity-50 transition-all cursor-pointer"
+                      className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:ring-2 focus:ring-lime-500 disabled:opacity-50 transition-all cursor-pointer font-bold"
                     >
                       <option value="">-- Escoger Selección --</option>
                       {TEAMS.map(team => {
@@ -580,17 +578,17 @@ const Dashboard = ({
 
               {!isLocked && (
                 <div className="mt-8 flex flex-col items-end">
-                  {!isFormValid() && (
-                    <p className="text-orange-400 text-xs sm:text-sm mb-4 flex items-center">
-                      <AlertCircle className="w-4 h-4 mr-1.5" />
-                      Debes completar tus datos e indicar los 4 puestos sin duplicar selecciones.
+                  {!isFormValid && (
+                    <p className="text-orange-400 text-xs sm:text-sm mb-4 flex items-center bg-orange-500/5 border border-orange-500/20 rounded-lg py-2 px-3">
+                      <AlertCircle className="w-4 h-4 mr-1.5 flex-shrink-0" />
+                      <span>{getValidationFeedback()}</span>
                     </p>
                   )}
                   <button 
                     onClick={requestLockPicks} 
-                    disabled={!isFormValid() || submitting}
+                    disabled={!isFormValid || submitting}
                     className={`px-6 py-3.5 rounded-lg text-sm font-extrabold transition-all flex items-center cursor-pointer
-                      ${isFormValid() && !submitting
+                      ${isFormValid && !submitting
                         ? 'bg-lime-500 text-slate-900 hover:bg-lime-400 shadow-[0_0_20px_rgba(132,204,22,0.3)]' 
                         : 'bg-slate-800 text-slate-500 cursor-not-allowed'}
                     `}
@@ -617,63 +615,71 @@ const Dashboard = ({
               <BarChart2 className="h-6 w-6 text-slate-500" />
             </div>
             <div className="overflow-x-auto">
-              <table className="w-full text-left text-sm text-slate-400">
-                <thead className="text-xs uppercase bg-slate-950/50 text-slate-500">
-                  <tr>
-                    <th className="px-6 py-4 font-bold tracking-wider">Pos</th>
-                    <th className="px-6 py-4 font-bold tracking-wider">Participante</th>
-                    <th className="px-6 py-4 font-bold tracking-wider">Pronósticos (1º al 4º)</th>
-                    <th className="px-6 py-4 font-bold tracking-wider text-center">Puntos</th>
-                    <th className="px-6 py-4 font-bold tracking-wider text-center">Inscripción</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {leaderboardData.map((p, idx) => (
-                    <tr key={p.id} className="border-b border-slate-850 hover:bg-slate-800/20 transition-all duration-150">
-                      <td className="px-6 py-4 font-black text-white text-base">{idx + 1}</td>
-                      <td className="px-6 py-4 font-bold text-slate-200">
-                        <div className="flex flex-col">
-                          <span>{p.name}</span>
-                          {p.phone && <span className="text-[10px] text-slate-500 font-normal">{p.phone}</span>}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="flex space-x-2">
-                          {p.picks ? (
-                            ['first', 'second', 'third', 'fourth'].map((pos, i) => {
-                              const team = TEAMS.find(t => t.id === p.picks[pos]);
-                              const posColors = ['border-yellow-400', 'border-slate-300', 'border-orange-400', 'border-slate-650'];
-                              return (
-                                <span 
-                                  key={pos} 
-                                  title={`${i + 1}º - ${team?.name || '❓'}`} 
-                                  className={`text-lg bg-slate-950 px-2.5 py-0.5 rounded border-b-2 ${posColors[i]} shadow-inner select-none cursor-help`}
-                                >
-                                  {team?.flag || '❓'}
-                                </span>
-                              );
-                            })
-                          ) : (
-                            <span className="text-xs text-slate-500 italic">Pendiente de rellenar favoritos</span>
-                          )}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 text-center font-extrabold text-lime-400 text-base">{p.points}</td>
-                      <td className="px-6 py-4 text-center">
-                        {p.hasPaid ? (
-                          <span className="inline-flex items-center px-2.5 py-1 text-xs font-bold rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                            Validado
-                          </span>
-                        ) : (
-                          <span className="inline-flex items-center px-2.5 py-1 text-xs font-bold rounded-full bg-red-500/10 text-red-400 border border-red-500/20">
-                            Impago
-                          </span>
-                        )}
-                      </td>
+              {leaderboardData.length === 0 ? (
+                <div className="p-12 text-center text-slate-500">
+                  <Trophy className="h-12 w-12 mx-auto mb-3 opacity-20" />
+                  <p className="text-sm">Aún no hay apuestas guardadas en el sistema.</p>
+                  <p className="text-xs text-slate-600 mt-1">¡Sé el primero de tu barrio en rellenar tus favoritos!</p>
+                </div>
+              ) : (
+                <table className="w-full text-left text-sm text-slate-400">
+                  <thead className="text-xs uppercase bg-slate-950/50 text-slate-500">
+                    <tr>
+                      <th className="px-6 py-4 font-bold tracking-wider">Pos</th>
+                      <th className="px-6 py-4 font-bold tracking-wider">Participante</th>
+                      <th className="px-6 py-4 font-bold tracking-wider">Pronósticos (1º al 4º)</th>
+                      <th className="px-6 py-4 font-bold tracking-wider text-center">Puntos</th>
+                      <th className="px-6 py-4 font-bold tracking-wider text-center">Inscripción</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {leaderboardData.map((p, idx) => (
+                      <tr key={p.id} className="border-b border-slate-850 hover:bg-slate-800/20 transition-all duration-150">
+                        <td className="px-6 py-4 font-black text-white text-base">{idx + 1}</td>
+                        <td className="px-6 py-4 font-bold text-slate-200">
+                          <div className="flex flex-col">
+                            <span>{p.name}</span>
+                            {p.phone && <span className="text-[10px] text-slate-500 font-normal">{p.phone}</span>}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="flex space-x-2">
+                            {p.picks ? (
+                              ['first', 'second', 'third', 'fourth'].map((pos, i) => {
+                                const team = TEAMS.find(t => t.id === p.picks[pos]);
+                                const posColors = ['border-yellow-400', 'border-slate-300', 'border-orange-400', 'border-slate-650'];
+                                return (
+                                  <span 
+                                    key={pos} 
+                                    title={`${i + 1}º - ${team?.name || '❓'}`} 
+                                    className={`text-lg bg-slate-950 px-2.5 py-0.5 rounded border-b-2 ${posColors[i]} shadow-inner select-none cursor-help`}
+                                  >
+                                    {team?.flag || '❓'}
+                                  </span>
+                                );
+                              })
+                            ) : (
+                              <span className="text-xs text-slate-500 italic">Pendiente de rellenar favoritos</span>
+                            )}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 text-center font-extrabold text-lime-400 text-base">{p.points}</td>
+                        <td className="px-6 py-4 text-center">
+                          {p.hasPaid ? (
+                            <span className="inline-flex items-center px-2.5 py-1 text-xs font-bold rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                              Validado
+                            </span>
+                          ) : (
+                            <span className="inline-flex items-center px-2.5 py-1 text-xs font-bold rounded-full bg-red-500/10 text-red-400 border border-red-500/20">
+                              Impago
+                            </span>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
             </div>
           </div>
         )}
@@ -686,7 +692,7 @@ const Dashboard = ({
               {matchesData.map(match => (
                 <div key={match.id} className="bg-slate-900 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between hover:border-slate-700 transition-all shadow-xl">
                   <div className="flex justify-between items-center mb-4">
-                    <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400 bg-slate-950 px-2 py-1 rounded-md">
+                    <span className="text-xs uppercase font-bold tracking-wider text-slate-400 bg-slate-950 px-2 py-1 rounded-md">
                       {match.date}
                     </span>
                     <span className={`text-[10px] uppercase font-extrabold px-2 py-1 rounded-md ${match.status === 'Finalizado' ? 'bg-slate-800 text-slate-400' : 'bg-lime-500/20 text-lime-400'}`}>
@@ -721,7 +727,6 @@ const Dashboard = ({
     </div>
   );
 };
-
 
 export default function App() {
   const [user, setUser] = useState(null); 
@@ -1078,6 +1083,14 @@ export default function App() {
         if (profIdx > -1) {
           db.profiles[profIdx].name = profile.name;
           db.profiles[profIdx].phone = profile.phone;
+        } else {
+          db.profiles.push({
+            id: user.id,
+            name: profile.name,
+            phone: profile.phone,
+            has_paid: false,
+            points: 0
+          });
         }
 
         db.picks = db.picks.filter(p => p.user_id !== user.id);
@@ -1124,7 +1137,7 @@ export default function App() {
       if (picksErr) throw picksErr;
 
       setIsLocked(true);
-      showToast("¡Apuesta guardada y guardada con éxito en la base de datos!", 'success');
+      showToast("¡Apuesta guardada y confirmada con éxito en la base de datos!", 'success');
       await loadGlobalData(client);
     } catch (err) {
       showToast("Error al guardar apuesta: " + err.message, 'error');
