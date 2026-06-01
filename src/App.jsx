@@ -37,7 +37,7 @@ const TEAMS = [
   { id: 'USA', name: 'Estados Unidos', flag: '🇺🇸' }
 ].sort((a, b) => a.name.localeCompare(b.name));
 
-// Función segura para obtener variables de entorno
+// Función segura para obtener variables de entorno sin provocar fallos de análisis sintáctico en ES2015
 const getEnvVariable = (key) => {
   try {
     return new Function('return import.meta.env')()[key];
@@ -48,8 +48,11 @@ const getEnvVariable = (key) => {
 
 const supabaseUrl = getEnvVariable('VITE_SUPABASE_URL');
 const supabaseAnonKey = getEnvVariable('VITE_SUPABASE_ANON_KEY');
+
+// Verificación de credenciales reales
 const hasRealCredentials = !!(supabaseUrl && supabaseAnonKey);
 
+// Cargador asíncrono para inyectar la librería de Supabase sin romper la compilación estática
 let supabaseClientInstance = null;
 
 const getSupabaseClient = async () => {
@@ -57,10 +60,13 @@ const getSupabaseClient = async () => {
   if (!hasRealCredentials) return null;
 
   try {
+    // Si la librería ya está cargada globalmente mediante CDN, la utilizamos
     if (window.supabase) {
       supabaseClientInstance = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
       return supabaseClientInstance;
     }
+
+    // Si no, cargamos el script de Supabase de manera dinámica
     return new Promise((resolve) => {
       const script = document.createElement('script');
       script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
@@ -82,19 +88,12 @@ const getSupabaseClient = async () => {
   }
 };
 
-// ⚠️ SISTEMA FORZADO DE PURGA DE DATOS FALSOS
+// Sistema de base de datos local (Solo almacena los 2 partidos finales puntuables)
 const getLocalDb = () => {
   const defaultDb = {
     profiles: [], 
     picks: [],    
     matches: [
-      { id: 1, phase: 'Fase de Grupos - Jornada 1', date: '11-16 Jun 2026', team1: 'Por definir', flag1: '❓', score1: '-', team2: 'Por definir', flag2: '❓', score2: '-', status: 'Próximamente' },
-      { id: 2, phase: 'Fase de Grupos - Jornada 2', date: '17-21 Jun 2026', team1: 'Por definir', flag1: '❓', score1: '-', team2: 'Por definir', flag2: '❓', score2: '-', status: 'Próximamente' },
-      { id: 3, phase: 'Fase de Grupos - Jornada 3', date: '22-27 Jun 2026', team1: 'Por definir', flag1: '❓', score1: '-', team2: 'Por definir', flag2: '❓', score2: '-', status: 'Próximamente' },
-      { id: 73, phase: 'Dieciseisavos de Final', date: '28-03 Jul 2026', team1: '1º Grupo A', flag1: '❓', score1: '-', team2: '3º Grupo C/D/E', flag2: '❓', score2: '-', status: 'Por definir' },
-      { id: 89, phase: 'Octavos de Final', date: '04-07 Jul 2026', team1: 'Ganador D1', flag1: '❓', score1: '-', team2: 'Ganador D2', flag2: '❓', score2: '-', status: 'Por definir' },
-      { id: 97, phase: 'Cuartos de Final', date: '09-11 Jul 2026', team1: 'Ganador O1', flag1: '❓', score1: '-', team2: 'Ganador O2', flag2: '❓', score2: '-', status: 'Por definir' },
-      { id: 101, phase: 'Semifinales', date: '14-15 Jul 2026', team1: 'Ganador C1', flag1: '❓', score1: '-', team2: 'Ganador C2', flag2: '❓', score2: '-', status: 'Por definir' },
       { id: 103, phase: '3º y 4º Puesto', date: '18 Jul 2026', team1: 'Perdedor S1', flag1: '❓', score1: '-', team2: 'Perdedor S2', flag2: '❓', score2: '-', status: 'Por definir' },
       { id: 104, phase: '🏆 Gran Final', date: '19 Jul 2026', team1: 'Ganador S1', flag1: '❓', score1: '-', team2: 'Ganador S2', flag2: '❓', score2: '-', status: 'Por definir' }
     ]
@@ -104,12 +103,11 @@ const getLocalDb = () => {
   if (stored) {
     try {
       const parsed = JSON.parse(stored);
-      // 🔥 ESTO BORRA EL ERROR: Si detecta que tienes el amistoso Argentina-Brasil (id: 3), MACHACA y sobreescribe tu memoria con el cuadro real
-      const hasFakeMatch = parsed.matches && parsed.matches.some(m => m.team1 === 'Argentina' && m.score1 === '2');
-      if (hasFakeMatch) {
-         console.warn("Purgando partidos antiguos de la memoria caché...");
-         localStorage.setItem('mundialbet_local_db', JSON.stringify(defaultDb));
-         return defaultDb;
+      // 🔥 Forzamos la limpieza de caché si detectamos que hay más de 2 partidos (los antiguos cruces)
+      if (parsed.matches && parsed.matches.length > 2) {
+        console.warn("Actualizando estructura de partidos a la versión final...");
+        localStorage.setItem('mundialbet_local_db', JSON.stringify(defaultDb));
+        return defaultDb;
       }
       return parsed;
     } catch (e) {
@@ -124,6 +122,7 @@ const saveLocalDb = (db) => {
   localStorage.setItem('mundialbet_local_db', JSON.stringify(db));
 };
 
+// Componente para notificaciones personalizadas tipo Toast
 const ToastNotification = ({ toast, onClose }) => {
   useEffect(() => {
     if (toast.show) {
@@ -156,6 +155,7 @@ const ToastNotification = ({ toast, onClose }) => {
   );
 };
 
+// Componente para ventana modal de confirmación personalizada
 const ConfirmationModal = ({ modal, onClose, onConfirm }) => {
   if (!modal.show) return null;
 
@@ -319,19 +319,23 @@ const LandingPage = ({ setCurrentTab }) => (
             <BarChart2 className="h-5 w-5 text-blue-400 mr-2" />
             Tabla de Puntuación
           </h4>
-          <p className="text-xs text-slate-400 mb-3">Tus cuatro elecciones irán sumando puntos acumulativos según avancen en el mundial real:</p>
+          <p className="text-xs text-slate-400 mb-3">Puntos otorgados al acertar la posición exacta de tus favoritos al finalizar el torneo:</p>
           <ul className="space-y-3 text-sm text-slate-300">
             <li className="flex justify-between border-b border-slate-800 pb-2">
-              <span>Por alcanzar Semifinales</span>
-              <span className="font-extrabold text-blue-400">+5 pts</span>
+              <span>Acertar el 1º Campeón</span>
+              <span className="font-extrabold text-blue-400">+20 pts</span>
             </li>
             <li className="flex justify-between border-b border-slate-800 pb-2">
-              <span>Por alcanzar la Gran Final</span>
+              <span>Acertar el 2º Subcampeón</span>
+              <span className="font-extrabold text-blue-400">+15 pts</span>
+            </li>
+            <li className="flex justify-between border-b border-slate-800 pb-2">
+              <span>Acertar el 3º Tercer Puesto</span>
               <span className="font-extrabold text-blue-400">+10 pts</span>
             </li>
             <li className="flex justify-between border-b border-slate-800 pb-2">
-              <span>Por proclamarse Campeón</span>
-              <span className="font-extrabold text-blue-400">+20 pts</span>
+              <span>Acertar el 4º Cuarto Puesto</span>
+              <span className="font-extrabold text-blue-400">+5 pts</span>
             </li>
           </ul>
         </div>
