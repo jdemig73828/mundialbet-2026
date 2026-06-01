@@ -94,9 +94,15 @@ const getLocalDb = () => {
     profiles: [], // Totalmente vacío para empezar de cero
     picks: [],    // Totalmente vacío para empezar de cero
     matches: [
-      { id: 1, date: '11 Jun, 20:00', team1: 'México', flag1: '🇲🇽', score1: '-', team2: 'Alemania', flag2: '🇩🇪', score2: '-', status: 'Próximamente' },
-      { id: 2, date: '12 Jun, 16:00', team1: 'España', flag1: '🇪🇸', score1: '-', team2: 'Marruecos', flag2: '🇲🇦', score2: '-', status: 'Próximamente' },
-      { id: 3, date: 'Amistoso', team1: 'Argentina', flag1: '🇦🇷', score1: '2', team2: 'Brasil', flag2: '🇧🇷', score2: '1', status: 'Finalizado' },
+      { id: 1, phase: 'Fase de Grupos - Jornada 1', date: '11-16 Jun 2026', team1: 'Por definir', flag1: '❓', score1: '-', team2: 'Por definir', flag2: '❓', score2: '-', status: 'Próximamente' },
+      { id: 2, phase: 'Fase de Grupos - Jornada 2', date: '17-21 Jun 2026', team1: 'Por definir', flag1: '❓', score1: '-', team2: 'Por definir', flag2: '❓', score2: '-', status: 'Próximamente' },
+      { id: 3, phase: 'Fase de Grupos - Jornada 3', date: '22-27 Jun 2026', team1: 'Por definir', flag1: '❓', score1: '-', team2: 'Por definir', flag2: '❓', score2: '-', status: 'Próximamente' },
+      { id: 73, phase: 'Dieciseisavos de Final', date: '28-03 Jul 2026', team1: '1º Grupo A', flag1: '❓', score1: '-', team2: '3º Grupo C/D/E', flag2: '❓', score2: '-', status: 'Por definir' },
+      { id: 89, phase: 'Octavos de Final', date: '04-07 Jul 2026', team1: 'Ganador D1', flag1: '❓', score1: '-', team2: 'Ganador D2', flag2: '❓', score2: '-', status: 'Por definir' },
+      { id: 97, phase: 'Cuartos de Final', date: '09-11 Jul 2026', team1: 'Ganador O1', flag1: '❓', score1: '-', team2: 'Ganador O2', flag2: '❓', score2: '-', status: 'Por definir' },
+      { id: 101, phase: 'Semifinales', date: '14-15 Jul 2026', team1: 'Ganador C1', flag1: '❓', score1: '-', team2: 'Ganador C2', flag2: '❓', score2: '-', status: 'Por definir' },
+      { id: 103, phase: '3º y 4º Puesto', date: '18 Jul 2026', team1: 'Perdedor S1', flag1: '❓', score1: '-', team2: 'Perdedor S2', flag2: '❓', score2: '-', status: 'Por definir' },
+      { id: 104, phase: '🏆 Gran Final', date: '19 Jul 2026', team1: 'Ganador S1', flag1: '❓', score1: '-', team2: 'Ganador S2', flag2: '❓', score2: '-', status: 'Por definir' }
     ]
   };
 
@@ -687,15 +693,18 @@ const Dashboard = ({
         {/* CONTENIDO: RESULTADOS Y PARTIDOS */}
         {activeView === 'matches' && (
           <div className="space-y-6 animate-fade-in">
-            <h3 className="text-lg font-black text-white uppercase tracking-wider">Resultados Oficiales</h3>
+            <h3 className="text-lg font-black text-white uppercase tracking-wider">Estructura y Resultados Oficiales</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {matchesData.map(match => (
                 <div key={match.id} className="bg-slate-900 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between hover:border-slate-700 transition-all shadow-xl">
-                  <div className="flex justify-between items-center mb-4">
-                    <span className="text-xs uppercase font-bold tracking-wider text-slate-400 bg-slate-950 px-2 py-1 rounded-md">
-                      {match.date}
-                    </span>
-                    <span className={`text-[10px] uppercase font-extrabold px-2 py-1 rounded-md ${match.status === 'Finalizado' ? 'bg-slate-800 text-slate-400' : 'bg-lime-500/20 text-lime-400'}`}>
+                  <div className="flex justify-between items-center mb-4 border-b border-slate-800/50 pb-3">
+                    <div className="flex flex-col">
+                      <span className="text-[11px] font-black text-lime-400 uppercase tracking-widest mb-1">{match.phase}</span>
+                      <span className="text-xs font-bold text-slate-400">
+                        {match.date}
+                      </span>
+                    </div>
+                    <span className={`text-[10px] uppercase font-extrabold px-2 py-1 rounded-md ${match.status === 'Finalizado' ? 'bg-slate-800 text-slate-400' : match.status === 'Por definir' ? 'bg-slate-800/50 text-slate-500' : 'bg-lime-500/20 text-lime-400'}`}>
                       {match.status}
                     </span>
                   </div>
