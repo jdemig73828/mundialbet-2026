@@ -17,59 +17,56 @@ import {
 } from 'lucide-react';
 
 const TEAMS = [
-  { id: 'KSA', name: 'Arabia Saudita', flag: '🇸🇦' },
-  { id: 'ALG', name: 'Argelia', flag: '🇩🇿' },
-  { id: 'ARG', name: 'Argentina', flag: '🇦🇷' },
-  { id: 'AUS', name: 'Australia', flag: '🇦🇺' },
-  { id: 'AUT', name: 'Austria', flag: '🇦🇹' },
-  { id: 'BEL', name: 'Bélgica', flag: '🇧🇪' },
-  { id: 'BIH', name: 'Bosnia y Herzegovina', flag: '🇧🇦' },
-  { id: 'BRA', name: 'Brasil', flag: '🇧🇷' },
-  { id: 'CPV', name: 'Cabo Verde', flag: '🇨🇻' },
-  { id: 'CAN', name: 'Canadá', flag: '🇨🇦' },
-  { id: 'COL', name: 'Colombia', flag: '🇨🇴' },
-  { id: 'KOR', name: 'Corea del Sur', flag: '🇰🇷' },
-  { id: 'CIV', name: 'Costa de Marfil', flag: '🇨🇮' },
-  { id: 'CRO', name: 'Croacia', flag: '🇭🇷' },
-  { id: 'CUW', name: 'Curazao', flag: '🇨🇼' },
-  { id: 'ECU', name: 'Ecuador', flag: '🇪🇨' },
-  { id: 'EGY', name: 'Egipto', flag: '🇪🇬' },
-  { id: 'SCO', name: 'Escocia', flag: '🏴󠁧󠁢󠁳󠁣󠁴󠁿' },
-  { id: 'ESP', name: 'España', flag: '🇪🇸' },
-  { id: 'USA', name: 'Estados Unidos', flag: '🇺🇸' },
-  { id: 'FRA', name: 'Francia', flag: '🇫🇷' },
-  { id: 'GHA', name: 'Ghana', flag: '🇬🇭' },
-  { id: 'HAI', name: 'Haití', flag: '🇭🇹' },
-  { id: 'ENG', name: 'Inglaterra', flag: '🏴󠁧󠁢󠁥󠁮󠁧󠁿' },
-  { id: 'IRN', name: 'Irán', flag: '🇮🇷' },
-  { id: 'IRQ', name: 'Irak', flag: '🇮🇶' },
-  { id: 'JPN', name: 'Japón', flag: '🇯🇵' },
-  { id: 'JOR', name: 'Jordania', flag: '🇯🇴' },
-  { id: 'MAR', name: 'Marruecos', flag: '🇲🇦' },
   { id: 'MEX', name: 'México', flag: '🇲🇽' },
-  { id: 'NOR', name: 'Noruega', flag: '🇳🇴' },
-  { id: 'NZL', name: 'Nueva Zelanda', flag: '🇳🇿' },
-  { id: 'NED', name: 'Países Bajos', flag: '🇳🇱' },
-  { id: 'PAN', name: 'Panamá', flag: '🇵🇦' },
-  { id: 'PAR', name: 'Paraguay', flag: '🇵🇾' },
-  { id: 'POR', name: 'Portugal', flag: '🇵🇹' },
-  { id: 'QAT', name: 'Qatar', flag: '🇶🇦' },
-  { id: 'CZE', name: 'República Checa', flag: '🇨🇿' },
-  { id: 'COD', name: 'RD Congo', flag: '🇨🇩' },
-  { id: 'SEN', name: 'Senegal', flag: '🇸🇳' },
   { id: 'RSA', name: 'Sudáfrica', flag: '🇿🇦' },
-  { id: 'SWE', name: 'Suecia', flag: '🇸🇪' },
+  { id: 'KOR', name: 'Corea del Sur', flag: '🇰🇷' },
+  { id: 'CZE', name: 'República Checa', flag: '🇨🇿' },
+  { id: 'CAN', name: 'Canadá', flag: '🇨🇦' },
+  { id: 'BIH', name: 'Bosnia y Herzegovina', flag: '🇧🇦' },
+  { id: 'QAT', name: 'Qatar', flag: '🇶🇦' },
   { id: 'SUI', name: 'Suiza', flag: '🇨🇭' },
-  { id: 'TUN', name: 'Túnez', flag: '🇹🇳' },
+  { id: 'BRA', name: 'Brasil', flag: '🇧🇷' },
+  { id: 'MAR', name: 'Marruecos', flag: '🇲🇦' },
+  { id: 'HAI', name: 'Haití', flag: '🇭🇹' },
+  { id: 'SCO', name: 'Escocia', flag: '🏴󠁧󠁢󠁳󠁣󠁴󠁿' },
+  { id: 'USA', name: 'Estados Unidos', flag: '🇺🇸' },
+  { id: 'PAR', name: 'Paraguay', flag: '🇵🇾' },
+  { id: 'AUS', name: 'Australia', flag: '🇦🇺' },
   { id: 'TUR', name: 'Turquía', flag: '🇹🇷' },
+  { id: 'GER', name: 'Alemania', flag: '🇩🇪' },
+  { id: 'CUW', name: 'Curazao', flag: '🇨🇼' },
+  { id: 'CIV', name: 'Costa de Marfil', flag: '🇨🇮' },
+  { id: 'ECU', name: 'Ecuador', flag: '🇪🇨' },
+  { id: 'NED', name: 'Países Bajos', flag: '🇳🇱' },
+  { id: 'JPN', name: 'Japón', flag: '🇯🇵' },
+  { id: 'SWE', name: 'Suecia', flag: '🇸🇪' },
+  { id: 'TUN', name: 'Túnez', flag: '🇹🇳' },
+  { id: 'BEL', name: 'Bélgica', flag: '🇧🇪' },
+  { id: 'EGY', name: 'Egipto', flag: '🇪🇬' },
+  { id: 'IRN', name: 'Irán', flag: '🇮🇷' },
+  { id: 'NZL', name: 'Nueva Zelanda', flag: '🇳🇿' },
+  { id: 'ESP', name: 'España', flag: '🇪🇸' },
+  { id: 'CPV', name: 'Cabo Verde', flag: '🇨🇻' },
+  { id: 'KSA', name: 'Arabia Saudita', flag: '🇸🇦' },
   { id: 'URU', name: 'Uruguay', flag: '🇺🇾' },
+  { id: 'FRA', name: 'Francia', flag: '🇫🇷' },
+  { id: 'SEN', name: 'Senegal', flag: '🇸🇳' },
+  { id: 'IRQ', name: 'Irak', flag: '🇮🇶' },
+  { id: 'NOR', name: 'Noruega', flag: '🇳🇴' },
+  { id: 'ARG', name: 'Argentina', flag: '🇦🇷' },
+  { id: 'ALG', name: 'Argelia', flag: '🇩🇿' },
+  { id: 'AUT', name: 'Austria', flag: '🇦🇹' },
+  { id: 'JOR', name: 'Jordania', flag: '🇯🇴' },
+  { id: 'POR', name: 'Portugal', flag: '🇵🇹' },
+  { id: 'COD', name: 'RD Congo', flag: '🇨🇩' },
   { id: 'UZB', name: 'Uzbekistán', flag: '🇺🇿' },
-  { id: 'GER', name: 'Alemania', flag: '🇩🇪' }
+  { id: 'COL', name: 'Colombia', flag: '🇨🇴' },
+  { id: 'ENG', name: 'Inglaterra', flag: '🏴󠁧󠁢󠁥󠁮󠁧󠁿' },
+  { id: 'CRO', name: 'Croacia', flag: '🇭🇷' },
+  { id: 'GHA', name: 'Ghana', flag: '🇬🇭' },
+  { id: 'PAN', name: 'Panamá', flag: '🇵🇦' }
 ].sort((a, b) => a.name.localeCompare(b.name));
 
-// Funciones seguras para obtener variables. 
-// Vite en Vercel reemplazará "import.meta.env.VITE_..." estáticamente por su string.
-// El try/catch evita que la vista previa de este chat explote al compilar en ES2015.
 const getSupabaseUrl = () => {
   try {
     return import.meta.env.VITE_SUPABASE_URL;
@@ -88,7 +85,6 @@ const getSupabaseKey = () => {
 
 let supabaseClientInstance = null;
 
-// Carga asíncrona de Supabase mediante CDN para evitar el error "Could not resolve" en el empaquetador
 const getSupabaseClient = async () => {
   if (supabaseClientInstance) return supabaseClientInstance;
   
@@ -119,13 +115,12 @@ const getSupabaseClient = async () => {
       document.head.appendChild(script);
     });
   } catch (error) {
-    console.error("Error al inicializar cliente Supabase dinámicamente:", error);
+    console.error("Error al inicializar cliente Supabase:", error);
     return null;
   }
 };
 
-// Usamos una nueva clave (v3) para asegurar que el navegador borre la información antigua.
-const LOCAL_DB_KEY = 'mundialbet_db_v3';
+const LOCAL_DB_KEY = 'mundialbet_db_v4';
 
 const getLocalDb = () => {
   const defaultDb = {
@@ -267,14 +262,14 @@ const LandingPage = ({ setCurrentTab }) => (
   <div className="min-h-screen bg-slate-950 text-slate-300">
     <div 
       className="relative bg-slate-900 py-24 sm:py-32 px-4 sm:px-6 lg:px-8 flex flex-col items-center text-center overflow-hidden bg-cover bg-center" 
-      style={{ backgroundImage: "linear-gradient(to bottom, rgba(2, 6, 23, 0.5), rgba(2, 6, 23, 1)), url('https://images.unsplash.com/photo-1522778119026-d647f0596c20?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80')" }}
+      style={{ backgroundImage: "linear-gradient(to bottom, rgba(2, 6, 23, 0.8), rgba(2, 6, 23, 1)), url('https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=1500&q=80')" }}
     >
       <Trophy className="h-20 w-20 text-lime-400 mb-6 z-10 drop-shadow-[0_0_20px_rgba(132,204,22,0.6)]" />
       <h1 className="text-4xl sm:text-6xl font-black text-white tracking-tight z-10 mb-6 uppercase">
         La Gran Porra del <span className="text-lime-400">Mundial 2026</span>
       </h1>
       <p className="max-w-2xl text-base sm:text-lg text-slate-300 z-10 mb-10 font-medium leading-relaxed">
-        Demuestra tus conocimientos de fútbol en el barrio. Elige tus 4 favoritos en su posición exacta y compite por el gran premio acumulado adivinando el pódium de la copa del mundo.
+        Demuestra tus conocimientos de fútbol en el barrio. Elige tus 4 favoritos en su posición exacta, realiza un seguimiento de los marcadores en tiempo real y compite por el gran premio acumulado.
       </p>
       <button 
         onClick={() => setCurrentTab('login')}
@@ -284,7 +279,6 @@ const LandingPage = ({ setCurrentTab }) => (
       </button>
     </div>
 
-    {/* Funcionamiento */}
     <div className="max-w-6xl mx-auto py-16 px-4 sm:px-6 lg:px-8">
       <h2 className="text-3xl font-black text-white text-center mb-12 tracking-wide uppercase">¿Cómo funciona el torneo?</h2>
       
@@ -318,7 +312,6 @@ const LandingPage = ({ setCurrentTab }) => (
         </div>
       </div>
 
-      {/* Reglas de la Porra actualizadas con el nuevo sistema de puntos */}
       <div className="mt-16 grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="bg-slate-900 border-l-4 border-lime-500 p-6 rounded-r-2xl shadow-md">
           <h4 className="text-white font-extrabold text-base mb-4 flex items-center">
@@ -348,22 +341,22 @@ const LandingPage = ({ setCurrentTab }) => (
             <BarChart2 className="h-5 w-5 text-blue-400 mr-2" />
             Tabla de Puntuación
           </h4>
-          <p className="text-xs text-slate-400 mb-3">Tus cuatro elecciones irán sumando puntos al terminar el torneo:</p>
+          <p className="text-xs text-slate-400 mb-3">Tus cuatro elecciones sumarán puntos exactos según su clasificación final en el torneo:</p>
           <ul className="space-y-3 text-sm text-slate-300">
             <li className="flex justify-between border-b border-slate-800 pb-2">
-              <span>Por proclamarse Campeón (1º)</span>
+              <span>Por proclamarse Campeón</span>
               <span className="font-extrabold text-blue-400">+20 pts</span>
             </li>
             <li className="flex justify-between border-b border-slate-800 pb-2">
-              <span>Por ser Subcampeón (2º)</span>
+              <span>Por alcanzar Subcampeón</span>
               <span className="font-extrabold text-blue-400">+15 pts</span>
             </li>
             <li className="flex justify-between border-b border-slate-800 pb-2">
-              <span>Por ganar el 3º Puesto</span>
+              <span>Por alcanzar 3º Puesto</span>
               <span className="font-extrabold text-blue-400">+10 pts</span>
             </li>
             <li className="flex justify-between border-b border-slate-800 pb-2">
-              <span>Por lograr el 4º Puesto</span>
+              <span>Por alcanzar 4º Puesto</span>
               <span className="font-extrabold text-blue-400">+5 pts</span>
             </li>
           </ul>
@@ -379,8 +372,9 @@ const LandingPage = ({ setCurrentTab }) => (
         </div>
       </div>
       
-      <div className="mt-12 text-center text-xs text-slate-600 border-t border-slate-800 pt-6">
-        <p>Fuente de datos: Selecciones nacionales confirmadas oficialmente por la FIFA para la Fase de Grupos del Mundial de Fútbol 2026. Todos los derechos reservados.</p>
+      <div className="mt-12 text-center text-xs text-slate-600 border-t border-slate-800 pt-6 pb-8">
+        <p className="mb-2">Fuente de datos: Selecciones nacionales confirmadas oficialmente por la FIFA para la Fase de Grupos del Mundial de Fútbol 2026. Todos los derechos reservados.</p>
+        <p className="font-bold text-slate-500">Javier de Miguel &copy; 2026</p>
       </div>
     </div>
   </div>
@@ -455,7 +449,9 @@ const LoginPage = ({
         <div className="mt-6 text-center border-t border-slate-850 pt-4">
           <button 
             type="button"
-            onClick={() => setIsRegistering(!isRegistering)}
+            onClick={() => {
+              setIsRegistering(!isRegistering);
+            }}
             className="text-xs text-slate-400 hover:text-white transition-all underline cursor-pointer"
           >
             {isRegistering ? "¿Ya tienes una cuenta? Inicia sesión aquí" : "¿Aún no participas? Registra tu cuenta"}
@@ -475,18 +471,16 @@ const Dashboard = ({
   const [activeView, setActiveView] = useState('picks');
 
   const hasNameVal = profile.name && profile.name.trim() !== '';
-  const hasPhoneVal = profile.phone && profile.phone.trim() !== '';
   
   const picksArray = Object.values(userPicks);
   const hasAllPicksVal = picksArray.length === 4 && picksArray.every(p => p !== '');
   const uniqueTeams = new Set(picksArray.filter(p => p !== ''));
   const isUniqueVal = uniqueTeams.size === 4;
 
-  const isFormValid = hasNameVal && hasPhoneVal && hasAllPicksVal && isUniqueVal;
+  const isFormValid = hasNameVal && hasAllPicksVal && isUniqueVal;
 
   const getValidationFeedback = () => {
     if (!hasNameVal) return "⚠️ Falta introducir el Nombre o Apodo de la Tabla.";
-    if (!hasPhoneVal) return "⚠️ Falta introducir el Teléfono Móvil (Requerido para Bizum).";
     if (!hasAllPicksVal) return "⚠️ Debes seleccionar una selección para cada uno de los 4 puestos.";
     if (!isUniqueVal) return "⚠️ Tienes selecciones repetidas. Cada puesto debe ser un país diferente.";
     return null;
@@ -496,7 +490,6 @@ const Dashboard = ({
     <div className="min-h-[calc(100vh-4rem)] bg-slate-950 p-4 sm:p-6 lg:p-8">
       <div className="max-w-6xl mx-auto">
         
-        {/* Banner de Pago */}
         {profile && !profile.has_paid && (
           <div className="bg-orange-500/10 border border-orange-500/30 rounded-xl p-4 mb-6 flex items-start sm:items-center">
             <AlertCircle className="text-orange-500 h-5 w-5 mt-0.5 sm:mt-0 mr-3 flex-shrink-0 animate-pulse" />
@@ -530,7 +523,6 @@ const Dashboard = ({
           </button>
         </div>
 
-        {/* MIS FAVORITOS */}
         {activeView === 'picks' && (
           <div className="space-y-6">
             <div className="bg-slate-900 rounded-2xl p-6 border border-slate-800 shadow-xl">
@@ -551,14 +543,12 @@ const Dashboard = ({
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold uppercase text-slate-400 mb-1">Teléfono Móvil (Validación Bizum)</label>
+                  <label className="block text-xs font-semibold uppercase text-slate-400 mb-1">Teléfono móvil para enviar Bizum de participación</label>
                   <input 
-                    type="tel" 
-                    value={profile.phone || ''} 
-                    onChange={(e) => setProfile({...profile, phone: e.target.value})} 
-                    disabled={isLocked || submitting} 
-                    className="w-full bg-slate-950 border border-slate-850 rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:ring-2 focus:ring-lime-500 disabled:opacity-50 transition-all font-bold" 
-                    placeholder="Ej: 600123456"
+                    type="text" 
+                    value="696068453" 
+                    disabled 
+                    className="w-full bg-slate-900 border border-slate-800 text-lime-400 rounded-lg px-4 py-3 text-sm focus:outline-none cursor-not-allowed transition-all font-black tracking-widest text-center" 
                   />
                 </div>
               </div>
@@ -630,7 +620,6 @@ const Dashboard = ({
           </div>
         )}
 
-        {/* CLASIFICACIÓN GLOBAL */}
         {activeView === 'leaderboard' && (
           <div className="bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden shadow-2xl animate-fade-in">
             <div className="p-6 border-b border-slate-800 flex justify-between items-center bg-slate-900/60">
@@ -667,7 +656,6 @@ const Dashboard = ({
                         <td className="px-6 py-4 font-bold text-slate-200">
                           <div className="flex flex-col">
                             <span>{p.name}</span>
-                            {p.phone && <span className="text-[10px] text-slate-500 font-normal">{p.phone}</span>}
                           </div>
                         </td>
                         <td className="px-6 py-4">
@@ -712,18 +700,15 @@ const Dashboard = ({
           </div>
         )}
 
-        {/* RESULTADOS Y PARTIDOS - Ahora incluye SÓLO los 2 partidos clave */}
         {activeView === 'matches' && (
           <div className="space-y-6 animate-fade-in">
             <h3 className="text-lg font-black text-white uppercase tracking-wider">Estructura y Resultados Oficiales</h3>
-            <p className="text-sm text-slate-400 mb-4">El seguimiento de la porra se basa exclusivamente en los resultados de los dos últimos partidos del torneo.</p>
-            
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {matchesData.map(match => (
-                <div key={match.id} className="bg-slate-900 border border-slate-800 rounded-2xl p-6 flex flex-col justify-between hover:border-slate-700 transition-all shadow-xl">
-                  <div className="flex justify-between items-center mb-6 border-b border-slate-800/50 pb-4">
+                <div key={match.id} className="bg-slate-900 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between hover:border-slate-700 transition-all shadow-xl">
+                  <div className="flex justify-between items-center mb-4 border-b border-slate-800/50 pb-3">
                     <div className="flex flex-col">
-                      <span className={`text-xs font-black uppercase tracking-widest mb-1 ${match.phase.includes('Final') ? 'text-yellow-400' : 'text-orange-400'}`}>
+                      <span className={`text-[11px] font-black uppercase tracking-widest mb-1 ${match.phase.includes('Final') ? 'text-yellow-400' : 'text-orange-400'}`}>
                         {match.phase}
                       </span>
                       <span className="text-xs font-bold text-slate-400 flex items-center">
@@ -731,26 +716,26 @@ const Dashboard = ({
                         {match.date}
                       </span>
                     </div>
-                    <span className={`text-[10px] uppercase font-extrabold px-3 py-1.5 rounded-lg ${match.status === 'Finalizado' ? 'bg-slate-800 text-slate-400' : match.status === 'Por definir' ? 'bg-slate-800/50 text-slate-500' : 'bg-lime-500/20 text-lime-400'}`}>
+                    <span className={`text-[10px] uppercase font-extrabold px-2 py-1 rounded-md ${match.status === 'Finalizado' ? 'bg-slate-800 text-slate-400' : match.status === 'Por definir' ? 'bg-slate-800/50 text-slate-500' : 'bg-lime-500/20 text-lime-400'}`}>
                       {match.status}
                     </span>
                   </div>
                   
                   <div className="flex justify-between items-center space-x-4">
                     <div className="flex items-center space-x-3 w-5/12">
-                      <span className="text-4xl select-none">{match.flag1}</span>
-                      <span className="font-bold text-white text-base sm:text-lg truncate">{match.team1}</span>
+                      <span className="text-3xl select-none">{match.flag1}</span>
+                      <span className="font-bold text-white text-sm sm:text-base truncate">{match.team1}</span>
                     </div>
                     
-                    <div className="w-2/12 flex justify-center items-center space-x-2 bg-slate-950 py-3 px-4 rounded-xl border border-slate-850 shadow-inner">
-                      <span className="text-xl font-extrabold text-white">{match.score1}</span>
+                    <div className="w-2/12 flex justify-center items-center space-x-1.5 bg-slate-950 py-2 px-3 rounded-xl border border-slate-850">
+                      <span className="text-base font-extrabold text-white">{match.score1}</span>
                       <span className="text-slate-600 font-bold">-</span>
-                      <span className="text-xl font-extrabold text-white">{match.score2}</span>
+                      <span className="text-base font-extrabold text-white">{match.score2}</span>
                     </div>
 
                     <div className="flex items-center justify-end space-x-3 w-5/12 text-right">
-                      <span className="font-bold text-white text-base sm:text-lg truncate">{match.team2}</span>
-                      <span className="text-4xl select-none">{match.flag2}</span>
+                      <span className="font-bold text-white text-sm sm:text-base truncate">{match.team2}</span>
+                      <span className="text-3xl select-none">{match.flag2}</span>
                     </div>
                   </div>
                 </div>
@@ -851,7 +836,7 @@ export default function App() {
       if (matches && matches.length > 0) {
         setMatchesData(matches);
       } else {
-        setMatchesData(getLocalDb().matches); // Fallback to local default if DB matches table is empty
+        setMatchesData(getLocalDb().matches);
       }
     } catch (err) {
       console.error("Error global data", err);
