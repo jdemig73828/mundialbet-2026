@@ -37,7 +37,7 @@ const TEAMS = [
   { id: 'USA', name: 'Estados Unidos', flag: '🇺🇸' }
 ].sort((a, b) => a.name.localeCompare(b.name));
 
-// Función segura para obtener variables de entorno sin provocar fallos de análisis sintáctico en ES2015
+// Función segura para obtener variables de entorno
 const getEnvVariable = (key) => {
   try {
     return new Function('return import.meta.env')()[key];
@@ -48,11 +48,8 @@ const getEnvVariable = (key) => {
 
 const supabaseUrl = getEnvVariable('VITE_SUPABASE_URL');
 const supabaseAnonKey = getEnvVariable('VITE_SUPABASE_ANON_KEY');
-
-// Verificación de credenciales reales
 const hasRealCredentials = !!(supabaseUrl && supabaseAnonKey);
 
-// Cargador asíncrono para inyectar la librería de Supabase sin romper la compilación estática
 let supabaseClientInstance = null;
 
 const getSupabaseClient = async () => {
@@ -60,13 +57,10 @@ const getSupabaseClient = async () => {
   if (!hasRealCredentials) return null;
 
   try {
-    // Si la librería ya está cargada globalmente mediante CDN, la utilizamos
     if (window.supabase) {
       supabaseClientInstance = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
       return supabaseClientInstance;
     }
-
-    // Si no, cargamos el script de Supabase de manera dinámica
     return new Promise((resolve) => {
       const script = document.createElement('script');
       script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
@@ -88,11 +82,11 @@ const getSupabaseClient = async () => {
   }
 };
 
-// Sistema de base de datos local limpia respaldada en LocalStorage (SE ELIMINARON TODOS LOS REGISTROS DE PRUEBA)
+// ⚠️ SISTEMA FORZADO DE PURGA DE DATOS FALSOS
 const getLocalDb = () => {
   const defaultDb = {
-    profiles: [], // Totalmente vacío para empezar de cero
-    picks: [],    // Totalmente vacío para empezar de cero
+    profiles: [], 
+    picks: [],    
     matches: [
       { id: 1, phase: 'Fase de Grupos - Jornada 1', date: '11-16 Jun 2026', team1: 'Por definir', flag1: '❓', score1: '-', team2: 'Por definir', flag2: '❓', score2: '-', status: 'Próximamente' },
       { id: 2, phase: 'Fase de Grupos - Jornada 2', date: '17-21 Jun 2026', team1: 'Por definir', flag1: '❓', score1: '-', team2: 'Por definir', flag2: '❓', score2: '-', status: 'Próximamente' },
@@ -110,10 +104,12 @@ const getLocalDb = () => {
   if (stored) {
     try {
       const parsed = JSON.parse(stored);
-      // Forzar limpieza si el usuario pidió purgar registros simulados antiguos
-      if (parsed.profiles && parsed.profiles.length > 0 && parsed.profiles.some(p => p.id === 'u1')) {
-        localStorage.setItem('mundialbet_local_db', JSON.stringify(defaultDb));
-        return defaultDb;
+      // 🔥 ESTO BORRA EL ERROR: Si detecta que tienes el amistoso Argentina-Brasil (id: 3), MACHACA y sobreescribe tu memoria con el cuadro real
+      const hasFakeMatch = parsed.matches && parsed.matches.some(m => m.team1 === 'Argentina' && m.score1 === '2');
+      if (hasFakeMatch) {
+         console.warn("Purgando partidos antiguos de la memoria caché...");
+         localStorage.setItem('mundialbet_local_db', JSON.stringify(defaultDb));
+         return defaultDb;
       }
       return parsed;
     } catch (e) {
@@ -128,7 +124,6 @@ const saveLocalDb = (db) => {
   localStorage.setItem('mundialbet_local_db', JSON.stringify(db));
 };
 
-// Componente para notificaciones personalizadas tipo Toast
 const ToastNotification = ({ toast, onClose }) => {
   useEffect(() => {
     if (toast.show) {
@@ -161,7 +156,6 @@ const ToastNotification = ({ toast, onClose }) => {
   );
 };
 
-// Componente para ventana modal de confirmación personalizada
 const ConfirmationModal = ({ modal, onClose, onConfirm }) => {
   if (!modal.show) return null;
 
@@ -449,7 +443,6 @@ const Dashboard = ({
 }) => {
   const [activeView, setActiveView] = useState('picks');
 
-  // Comprobar individualmente las validaciones para dar un mensaje explicativo y dinámico
   const hasNameVal = profile.name && profile.name.trim() !== '';
   const hasPhoneVal = profile.phone && profile.phone.trim() !== '';
   
@@ -460,7 +453,6 @@ const Dashboard = ({
 
   const isFormValid = hasNameVal && hasPhoneVal && hasAllPicksVal && isUniqueVal;
 
-  // Obtener mensaje dinámico de ayuda
   const getValidationFeedback = () => {
     if (!hasNameVal) return "⚠️ Falta introducir el Nombre o Apodo de la Tabla.";
     if (!hasPhoneVal) return "⚠️ Falta introducir el Teléfono Móvil (Requerido para Bizum).";
@@ -473,7 +465,6 @@ const Dashboard = ({
     <div className="min-h-[calc(100vh-4rem)] bg-slate-950 p-4 sm:p-6 lg:p-8">
       <div className="max-w-6xl mx-auto">
         
-        {/* Banner de Pago */}
         {profile && !profile.has_paid && (
           <div className="bg-orange-500/10 border border-orange-500/30 rounded-xl p-4 mb-6 flex items-start sm:items-center">
             <AlertCircle className="text-orange-500 h-5 w-5 mt-0.5 sm:mt-0 mr-3 flex-shrink-0 animate-pulse" />
@@ -486,7 +477,6 @@ const Dashboard = ({
           </div>
         )}
 
-        {/* Menú de Navegación del Dashboard */}
         <div className="flex overflow-x-auto bg-slate-900 border border-slate-800 mb-6 p-2 space-x-2 rounded-xl">
           <button 
             onClick={() => setActiveView('picks')} 
@@ -508,7 +498,6 @@ const Dashboard = ({
           </button>
         </div>
 
-        {/* CONTENIDO: MIS FAVORITOS */}
         {activeView === 'picks' && (
           <div className="space-y-6">
             <div className="bg-slate-900 rounded-2xl p-6 border border-slate-800 shadow-xl">
@@ -608,7 +597,6 @@ const Dashboard = ({
           </div>
         )}
 
-        {/* CONTENIDO: CLASIFICACIÓN GLOBAL */}
         {activeView === 'leaderboard' && (
           <div className="bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden shadow-2xl animate-fade-in">
             <div className="p-6 border-b border-slate-800 flex justify-between items-center bg-slate-900/60">
@@ -690,7 +678,6 @@ const Dashboard = ({
           </div>
         )}
 
-        {/* CONTENIDO: RESULTADOS Y PARTIDOS */}
         {activeView === 'matches' && (
           <div className="space-y-6 animate-fade-in">
             <h3 className="text-lg font-black text-white uppercase tracking-wider">Estructura y Resultados Oficiales</h3>
@@ -743,22 +730,18 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
 
-  // Estados del jugador registrado
   const [profile, setProfile] = useState({ name: '', phone: '', has_paid: false, points: 0 });
   const [userPicks, setUserPicks] = useState({ first: '', second: '', third: '', fourth: '' });
   const [isLocked, setIsLocked] = useState(false);
 
-  // Datos globales unificados
   const [leaderboardData, setLeaderboardData] = useState([]);
   const [matchesData, setMatchesData] = useState([]);
 
-  // Estados del Formulario de Acceso
   const [loginEmail, setLoginEmail] = useState('');
   const [loginPass, setLoginPass] = useState('');
   const [isRegistering, setIsRegistering] = useState(false);
   const [authError, setAuthError] = useState('');
 
-  // Modales y Toasts personalizados (Evitan el uso de alert/confirm)
   const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
   const [confirmModal, setConfirmModal] = useState({ show: false, title: '', message: '', onConfirm: null });
 
@@ -770,11 +753,9 @@ export default function App() {
     setToast(prev => ({ ...prev, show: false }));
   };
 
-  // Carga de la información de usuario y apuestas
   const fetchUserData = async (client, userId) => {
     try {
       if (!client) {
-        // Ejecución en modo local (LocalStorage)
         const db = getLocalDb();
         const prof = db.profiles.find(p => p.id === userId);
         if (prof) {
@@ -800,7 +781,6 @@ export default function App() {
         return;
       }
 
-      // Ejecución con cliente real de Supabase
       const { data: profData, error: profErr } = await client
         .from('profiles')
         .select('*')
@@ -842,11 +822,9 @@ export default function App() {
     }
   };
 
-  // Carga global de tablas e información del torneo
   const loadGlobalData = async (client) => {
     try {
       if (!client) {
-        // Datos de simulación local
         const db = getLocalDb();
         const merged = db.profiles.map(prof => {
           const userPick = db.picks.find(pk => pk.user_id === prof.id);
@@ -870,7 +848,6 @@ export default function App() {
         return;
       }
 
-      // Conexión real contra Supabase
       const { data: profiles, error: pErr } = await client.from('profiles').select('*');
       if (pErr) throw pErr;
 
@@ -908,7 +885,6 @@ export default function App() {
     }
   };
 
-  // Efecto de inicialización de la app
   useEffect(() => {
     const initializeApp = async () => {
       const client = await getSupabaseClient();
@@ -936,7 +912,6 @@ export default function App() {
         setLoading(false);
         return () => subscription.unsubscribe();
       } else {
-        // Inicialización en entorno de simulación local
         const storedUser = localStorage.getItem('mundialbet_session');
         if (storedUser) {
           const u = JSON.parse(storedUser);
@@ -952,7 +927,6 @@ export default function App() {
     initializeApp();
   }, []);
 
-  // Formulario de registro o login
   const handleAuth = async (e) => {
     e.preventDefault();
     setAuthError('');
@@ -962,7 +936,6 @@ export default function App() {
       const client = await getSupabaseClient();
 
       if (!client) {
-        // Autenticación simulada
         const id = 'mock_' + loginEmail.split('@')[0];
         const loggedUser = { id, email: loginEmail, name: loginEmail.split('@')[0] };
         
@@ -976,7 +949,6 @@ export default function App() {
           saveLocalDb(db);
           showToast("¡Registro simulado completado con éxito!", 'success');
         } else {
-          // Si hace login, nos aseguramos que tenga un perfil creado
           const userExists = db.profiles.some(p => p.id === id);
           if (!userExists) {
             db.profiles.push({ id, name: loginEmail.split('@')[0], phone: '', has_paid: false, points: 0 });
@@ -993,7 +965,6 @@ export default function App() {
         return;
       }
 
-      // Autenticación real de Supabase
       if (isRegistering) {
         const { data, error } = await client.auth.signUp({
           email: loginEmail,
@@ -1065,7 +1036,6 @@ export default function App() {
     setUserPicks(prev => ({ ...prev, [position]: teamId }));
   };
 
-  // Manejo de la confirmación de la apuesta (Petición de Modal)
   const requestLockPicks = () => {
     setConfirmModal({
       show: true,
@@ -1077,7 +1047,6 @@ export default function App() {
     });
   };
 
-  // Guardado real o simulado
   const executeLockPicks = async () => {
     if (!user) return;
     setSubmitting(true);
@@ -1086,7 +1055,6 @@ export default function App() {
       const client = await getSupabaseClient();
 
       if (!client) {
-        // Guardado en modo local
         const db = getLocalDb();
         const profIdx = db.profiles.findIndex(p => p.id === user.id);
         if (profIdx > -1) {
@@ -1120,7 +1088,6 @@ export default function App() {
         return;
       }
 
-      // Guardado oficial en Supabase
       const { error: profErr } = await client
         .from('profiles')
         .upsert({
@@ -1194,7 +1161,6 @@ export default function App() {
         />
       )}
 
-      {/* Alertas modales y notificaciones customizadas */}
       <ToastNotification toast={toast} onClose={closeToast} />
       <ConfirmationModal 
         modal={confirmModal} 
