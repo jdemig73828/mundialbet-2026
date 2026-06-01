@@ -262,7 +262,7 @@ const LandingPage = ({ setCurrentTab }) => (
   <div className="min-h-screen bg-slate-950 text-slate-300">
     <div 
       className="relative bg-slate-900 py-24 sm:py-32 px-4 sm:px-6 lg:px-8 flex flex-col items-center text-center overflow-hidden bg-cover bg-center" 
-      style={{ backgroundImage: "linear-gradient(to bottom, rgba(2, 6, 23, 0.8), rgba(2, 6, 23, 1)), url('https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=1500&q=80')" }}
+      style={{ backgroundImage: "linear-gradient(to bottom, rgba(2, 6, 23, 0.7), rgba(2, 6, 23, 1)), url('https://images.unsplash.com/photo-1522778119026-d647f0596c20?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80')" }}
     >
       <Trophy className="h-20 w-20 text-lime-400 mb-6 z-10 drop-shadow-[0_0_20px_rgba(132,204,22,0.6)]" />
       <h1 className="text-4xl sm:text-6xl font-black text-white tracking-tight z-10 mb-6 uppercase">
