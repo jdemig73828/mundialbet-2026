@@ -388,14 +388,18 @@ const LoginPage = ({
 }) => {
   return (
     <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center p-4 bg-slate-950">
-      <div className="bg-slate-900 max-w-md w-full rounded-2xl shadow-2xl p-8 border border-slate-800">
+      <div className="bg-slate-900 max-w-md w-full rounded-2xl shadow-2xl p-6 sm:p-8 border border-slate-800">
+        
+        {/* TÍTULO DINÁMICO Y COLORES SEGÚN EL MODO */}
         <div className="text-center mb-6">
-          <Trophy className="h-12 w-12 text-lime-400 mx-auto mb-3" />
-          <h2 className="text-3xl font-black text-white tracking-tight uppercase">Portal de Acceso</h2>
-          <p className="text-slate-400 mt-2 text-sm leading-relaxed">
+          <Trophy className={`h-10 w-10 sm:h-12 sm:w-12 mx-auto mb-3 transition-colors ${isRegistering ? 'text-lime-400' : 'text-blue-400'}`} />
+          <h2 className={`text-2xl sm:text-3xl font-black tracking-tight uppercase transition-colors ${isRegistering ? 'text-lime-400 drop-shadow-[0_0_8px_rgba(132,204,22,0.3)]' : 'text-blue-400 drop-shadow-[0_0_8px_rgba(96,165,250,0.3)]'}`}>
+            {isRegistering ? "Registro de Usuario" : "Iniciar Sesión"}
+          </h2>
+          <p className="text-slate-400 mt-2 text-xs sm:text-sm leading-relaxed">
             {isRegistering 
-              ? "Regístrate hoy para empezar a planificar tus favoritos." 
-              : "Inicia sesión para gestionar tus apuestas y seguir el Bote."}
+              ? "Crea tu cuenta nueva para empezar a planificar tus favoritos." 
+              : "Introduce tus datos para acceder y seguir los resultados."}
           </p>
         </div>
 
@@ -414,7 +418,7 @@ const LoginPage = ({
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:ring-2 focus:ring-lime-500 focus:border-transparent transition-all"
+              className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:ring-2 focus:ring-slate-500 focus:border-transparent transition-all"
               placeholder="tu@email.com"
             />
           </div>
@@ -425,36 +429,42 @@ const LoginPage = ({
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:ring-2 focus:ring-lime-500 focus:border-transparent transition-all"
+              className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:ring-2 focus:ring-slate-500 focus:border-transparent transition-all"
               placeholder="••••••••"
               minLength={6}
             />
           </div>
+          
+          {/* BOTÓN DINÁMICO */}
           <button 
             type="submit"
             disabled={submitting}
-            className="w-full bg-lime-500 hover:bg-lime-600 text-slate-900 font-bold py-3 px-4 rounded-lg transition-all flex justify-center items-center cursor-pointer shadow-lg shadow-lime-500/10 hover:shadow-lime-500/20"
+            className={`w-full font-bold py-3 px-4 rounded-lg transition-all flex justify-center items-center cursor-pointer shadow-lg ${isRegistering ? 'bg-lime-500 hover:bg-lime-400 text-slate-900 shadow-lime-500/10' : 'bg-blue-500 hover:bg-blue-400 text-slate-900 shadow-blue-500/10'}`}
           >
             {submitting ? (
               <Loader2 className="animate-spin h-5 w-5 text-slate-900" />
             ) : (
               <>
-                {isRegistering ? "Completar Registro" : "Acceder al Portal"}
+                {isRegistering ? "Completar Registro" : "Entrar al Portal"}
                 <ChevronRight className="ml-2 h-5 w-5" />
               </>
             )}
           </button>
         </form>
 
-        <div className="mt-6 text-center border-t border-slate-850 pt-4">
+        {/* CAMBIO DE MODO MUCHO MÁS CLARO */}
+        <div className="mt-8 text-center border-t border-slate-800 pt-6">
+          <p className="text-slate-500 text-xs font-bold uppercase tracking-widest mb-3">
+            {isRegistering ? "¿Ya tienes una cuenta?" : "¿Aún no participas en la porra?"}
+          </p>
           <button 
             type="button"
             onClick={() => {
               setIsRegistering(!isRegistering);
             }}
-            className="text-xs text-slate-400 hover:text-white transition-all underline cursor-pointer"
+            className={`text-sm font-black transition-all cursor-pointer flex items-center justify-center w-full py-2.5 rounded-lg border ${isRegistering ? 'text-blue-400 border-blue-400/30 hover:bg-blue-400/10' : 'text-lime-400 border-lime-400/30 hover:bg-lime-400/10'}`}
           >
-            {isRegistering ? "¿Ya tienes una cuenta? Inicia sesión aquí" : "¿Aún no participas? Registra tu cuenta"}
+            {isRegistering ? "Cambiar a Iniciar Sesión" : "Crear una Cuenta Nueva"}
           </button>
         </div>
       </div>
