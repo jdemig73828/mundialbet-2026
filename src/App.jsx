@@ -217,28 +217,76 @@ const ConfirmationModal = ({ modal, onClose, onConfirm }) => {
   );
 };
 
+// Componente del Contador Regresivo
+const CountdownTimer = () => {
+  const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+
+  useEffect(() => {
+    // 11 de Junio de 2026 a las 21:00 CEST (España local = UTC+2 en verano)
+    const targetDate = new Date('2026-06-11T21:00:00+02:00').getTime();
+
+    const timer = setInterval(() => {
+      const now = new Date().getTime();
+      const distance = targetDate - now;
+
+      if (distance < 0) {
+        clearInterval(timer);
+        setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+      } else {
+        setTimeLeft({
+          days: Math.floor(distance / (1000 * 60 * 60 * 24)),
+          hours: Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
+          minutes: Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)),
+          seconds: Math.floor((distance % (1000 * 60)) / 1000)
+        });
+      }
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
+
+  const formatNum = (num) => num.toString().padStart(2, '0');
+
+  return (
+    <div className="z-10 flex space-x-2 sm:space-x-4 mb-8 mt-4">
+      {[
+        { label: 'DÍAS', value: timeLeft.days },
+        { label: 'HORAS', value: formatNum(timeLeft.hours) },
+        { label: 'MINS', value: formatNum(timeLeft.minutes) },
+        { label: 'SEGS', value: formatNum(timeLeft.seconds) }
+      ].map((item, idx) => (
+        <div key={idx} className="flex flex-col items-center bg-slate-950/70 backdrop-blur-md border border-slate-700/50 p-2 sm:p-4 rounded-xl min-w-[65px] sm:min-w-[90px] shadow-2xl">
+          <span className="text-2xl sm:text-5xl font-black text-lime-400 drop-shadow-md">{item.value}</span>
+          <span className="text-[9px] sm:text-xs text-slate-300 uppercase font-bold tracking-widest mt-1">{item.label}</span>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+// NAVBAR ACTUALIZADA CON VISTA MÓVIL PERFECTA
 const Navbar = ({ user, setCurrentTab, handleLogout }) => (
   <nav className="bg-slate-900 border-b border-slate-800 sticky top-0 z-50 shadow-md">
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div className="flex items-center justify-between h-16">
         <div 
-          className="flex items-center space-x-2 cursor-pointer select-none" 
+          className="flex items-center space-x-2 cursor-pointer select-none shrink-0" 
           onClick={() => setCurrentTab(user ? 'dashboard' : 'home')}
         >
-          <Trophy className="h-8 w-8 text-lime-400 drop-shadow-[0_0_10px_rgba(132,204,22,0.4)]" />
-          <span className="text-white font-black text-xl tracking-wider">
-            MUNDIAL<span className="text-lime-400">BET</span> 2026
+          <Trophy className="h-6 w-6 sm:h-8 sm:w-8 text-lime-400 drop-shadow-[0_0_10px_rgba(132,204,22,0.4)] flex-shrink-0" />
+          <span className="text-white font-black text-lg sm:text-xl tracking-wider truncate">
+            MUNDIAL<span className="text-lime-400">BET</span> <span className="hidden sm:inline">2026</span>
           </span>
         </div>
         <div className="flex items-center">
           {user ? (
-            <div className="flex items-center space-x-4">
-              <span className="text-slate-300 hidden sm:inline-block text-sm">
+            <div className="flex items-center space-x-2 sm:space-x-4">
+              <span className="text-slate-300 hidden md:inline-block text-sm">
                 Hola, <span className="font-bold text-white">{user.name}</span>
               </span>
               <button 
                 onClick={handleLogout}
-                className="bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all cursor-pointer border border-slate-700"
+                className="bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all cursor-pointer border border-slate-700 whitespace-nowrap"
               >
                 Salir
               </button>
@@ -246,10 +294,11 @@ const Navbar = ({ user, setCurrentTab, handleLogout }) => (
           ) : (
             <button 
               onClick={() => setCurrentTab('login')}
-              className="bg-lime-500 hover:bg-lime-600 text-slate-900 px-4 py-2 rounded-lg text-sm font-bold flex items-center transition-all shadow-lg shadow-lime-500/20 cursor-pointer"
+              className="bg-lime-500 hover:bg-lime-600 text-slate-900 px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg text-xs sm:text-sm font-bold flex items-center transition-all shadow-lg shadow-lime-500/20 cursor-pointer whitespace-nowrap"
             >
-              <LogIn className="h-4 w-4 mr-2" />
-              Entrar / Registro
+              <LogIn className="h-4 w-4 mr-1 sm:mr-2 flex-shrink-0" />
+              <span className="hidden sm:inline">Entrar / Registro</span>
+              <span className="sm:hidden">Acceder</span>
             </button>
           )}
         </div>
@@ -261,26 +310,30 @@ const Navbar = ({ user, setCurrentTab, handleLogout }) => (
 const LandingPage = ({ setCurrentTab }) => (
   <div className="min-h-screen bg-slate-950 text-slate-300">
     <div 
-      className="relative bg-slate-900 py-24 sm:py-32 px-4 sm:px-6 lg:px-8 flex flex-col items-center text-center overflow-hidden bg-cover bg-center" 
+      className="relative bg-slate-900 py-20 sm:py-32 px-4 sm:px-6 lg:px-8 flex flex-col items-center text-center overflow-hidden bg-cover bg-center" 
       style={{ backgroundImage: "linear-gradient(to bottom, rgba(2, 6, 23, 0.7), rgba(2, 6, 23, 1)), url('https://images.unsplash.com/photo-1522778119026-d647f0596c20?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80')" }}
     >
-      <Trophy className="h-20 w-20 text-lime-400 mb-6 z-10 drop-shadow-[0_0_20px_rgba(132,204,22,0.6)]" />
-      <h1 className="text-4xl sm:text-6xl font-black text-white tracking-tight z-10 mb-6 uppercase">
-        La Gran Porra del <span className="text-lime-400">Mundial 2026</span>
+      <Trophy className="h-16 w-16 sm:h-20 sm:w-20 text-lime-400 mb-6 z-10 drop-shadow-[0_0_20px_rgba(132,204,22,0.6)]" />
+      <h1 className="text-4xl sm:text-6xl font-black text-white tracking-tight z-10 mb-2 uppercase">
+        La Gran Porra del <span className="text-lime-400 block sm:inline mt-2 sm:mt-0">Mundial 2026</span>
       </h1>
-      <p className="max-w-2xl text-base sm:text-lg text-slate-300 z-10 mb-10 font-medium leading-relaxed">
+      
+      {/* Nuevo Contador de Tiempo */}
+      <CountdownTimer />
+
+      <p className="max-w-2xl text-sm sm:text-lg text-slate-200 z-10 mb-8 font-medium leading-relaxed px-2">
         Demuestra tus conocimientos de fútbol en el barrio. Elige tus 4 favoritos en su posición exacta, realiza un seguimiento de los marcadores en tiempo real y compite por el gran premio acumulado.
       </p>
       <button 
         onClick={() => setCurrentTab('login')}
-        className="z-10 bg-lime-500 hover:bg-lime-400 text-slate-900 font-extrabold text-lg px-8 sm:px-10 py-4 sm:py-5 rounded-full shadow-[0_0_30px_rgba(132,204,22,0.4)] transition-all transform hover:scale-105 cursor-pointer"
+        className="z-10 bg-lime-500 hover:bg-lime-400 text-slate-900 font-extrabold text-base sm:text-lg px-8 sm:px-10 py-4 sm:py-5 rounded-full shadow-[0_0_30px_rgba(132,204,22,0.4)] transition-all transform hover:scale-105 cursor-pointer whitespace-nowrap"
       >
         ¡Participar Ahora!
       </button>
     </div>
 
     <div className="max-w-6xl mx-auto py-16 px-4 sm:px-6 lg:px-8">
-      <h2 className="text-3xl font-black text-white text-center mb-12 tracking-wide uppercase">¿Cómo funciona el torneo?</h2>
+      <h2 className="text-2xl sm:text-3xl font-black text-white text-center mb-12 tracking-wide uppercase">¿Cómo funciona el torneo?</h2>
       
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         <div className="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-xl hover:border-slate-700 transition-all">
@@ -390,7 +443,6 @@ const LoginPage = ({
     <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center p-4 bg-slate-950">
       <div className="bg-slate-900 max-w-md w-full rounded-2xl shadow-2xl p-6 sm:p-8 border border-slate-800">
         
-        {/* TÍTULO DINÁMICO Y COLORES SEGÚN EL MODO */}
         <div className="text-center mb-6">
           <Trophy className={`h-10 w-10 sm:h-12 sm:w-12 mx-auto mb-3 transition-colors ${isRegistering ? 'text-lime-400' : 'text-blue-400'}`} />
           <h2 className={`text-2xl sm:text-3xl font-black tracking-tight uppercase transition-colors ${isRegistering ? 'text-lime-400 drop-shadow-[0_0_8px_rgba(132,204,22,0.3)]' : 'text-blue-400 drop-shadow-[0_0_8px_rgba(96,165,250,0.3)]'}`}>
@@ -435,7 +487,6 @@ const LoginPage = ({
             />
           </div>
           
-          {/* BOTÓN DINÁMICO */}
           <button 
             type="submit"
             disabled={submitting}
@@ -452,7 +503,6 @@ const LoginPage = ({
           </button>
         </form>
 
-        {/* CAMBIO DE MODO MUCHO MÁS CLARO */}
         <div className="mt-8 text-center border-t border-slate-800 pt-6">
           <p className="text-slate-500 text-xs font-bold uppercase tracking-widest mb-3">
             {isRegistering ? "¿Ya tienes una cuenta?" : "¿Aún no participas en la porra?"}
