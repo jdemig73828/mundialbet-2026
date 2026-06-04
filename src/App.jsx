@@ -679,14 +679,14 @@ const Dashboard = ({
             </div>
           </div>
         )}
-
+        {/* CONTENIDO: CLASIFICACIÓN GLOBAL */}
         {activeView === 'leaderboard' && (
           <div className="bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden shadow-2xl animate-fade-in">
             <div className="p-6 border-b border-slate-800 flex justify-between items-center bg-slate-900/60">
               <div>
                 <h3 className="text-lg font-black text-white uppercase tracking-wider">Clasificación Global</h3>
                 <p className="text-xs sm:text-sm text-slate-400 mt-1">
-                  Bote total estimado acumulado: <span className="text-lime-400 font-extrabold">{leaderboardData.length * 20}€</span>
+                  Bote total acumulado: <span className="text-lime-400 font-extrabold">{leaderboardData.filter(p => p.hasPaid).length * 20}€</span>
                 </p>
               </div>
               <BarChart2 className="h-6 w-6 text-slate-500" />
